@@ -102,6 +102,28 @@ const Product = () => {
 
   return (
     <div className="w-full py-20 px-4 sm:px-6 lg:px-16">
+      <div className="relative bg-gradient-to-r from-purple-50 via-pink-50 to-blue-50 py-16 px-4 md:px-8">
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute -top-24 -right-24 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl"></div>
+    <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-pink-200/30 rounded-full blur-3xl"></div>
+  </div>
+
+  <div className="relative max-w-4xl mx-auto text-center">
+    {/* Cart Icon */}
+    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full mb-4 shadow-lg">
+      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+    </div>
+    
+    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      Your Shopping Cart
+    </h1>
+    <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+      Review your spiritual treasures and proceed to checkout for a journey of wellness and enlightenment
+    </p>
+  </div>
+</div>
       {/* Product Data */}
       <div className={`flex ${isMobile ? "flex-col" : "flex-row"} gap-4`}>
         {/* Product Images */}

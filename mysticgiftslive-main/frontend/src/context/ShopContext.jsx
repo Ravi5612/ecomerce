@@ -21,12 +21,34 @@ const ShopContextProvider = (props) => {
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
 
+    // ✅ AUTO-LOGOUT: Clear user after 1 hour of inactivity
+    useEffect(() => {
+        if (token) {
+            // Set timeout for 1 hour (3600000 ms)
+            const logoutTimer = setTimeout(() => {
+                toast.warning('Session expired due to inactivity. Please login again.');
+                logout();
+            }, 60 * 60 * 1000); // 1 hour
+
+            // Clear timeout if component unmounts or token changes
+            return () => clearTimeout(logoutTimer);
+        }
+    }, [token]);
+
     // 1. FIRST: Set up axios interceptor (independent of token state)
     useEffect(() => {
         const interceptor = api.interceptors.response.use(
             response => response,
             async error => {
                 const originalRequest = error.config;
+                
+                // ✅ Handle session expired from backend
+                if (error.response?.data?.expired) {
+                    toast.error('Session expired. Please login again.');
+                    logout();
+                    return Promise.reject(error);
+                }
+                
                 if (error.response && error.response.status === 401 && !originalRequest._retry) {
                     originalRequest._retry = true;
                     try {
@@ -53,6 +75,23 @@ const ShopContextProvider = (props) => {
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         const storedRole = localStorage.getItem('role');
+        const loginTime = localStorage.getItem('loginTime');
+        
+        // ✅ Check if token is older than 1 hour
+        if (storedToken && loginTime) {
+            const oneHourInMs = 60 * 60 * 1000;
+            const timeSinceLogin = Date.now() - parseInt(loginTime);
+            
+            if (timeSinceLogin > oneHourInMs) {
+                // Token expired, clear everything
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                localStorage.removeItem('loginTime');
+                toast.info('Session expired. Please login again.');
+                setLoadingToken(false);
+                return;
+            }
+        }
         
         if (storedToken) {
             setToken(storedToken);
@@ -77,8 +116,13 @@ const ShopContextProvider = (props) => {
     useEffect(() => {
         if (token) {
             localStorage.setItem('token', token);
+            // ✅ Store login time
+            if (!localStorage.getItem('loginTime')) {
+                localStorage.setItem('loginTime', Date.now().toString());
+            }
         } else {
             localStorage.removeItem('token');
+            localStorage.removeItem('loginTime');
         }
         
         if (role) {
@@ -304,6 +348,7 @@ const ShopContextProvider = (props) => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         localStorage.removeItem('cart');
+        localStorage.removeItem('loginTime'); // ✅ Clear login time
         navigate('/');
     };
 

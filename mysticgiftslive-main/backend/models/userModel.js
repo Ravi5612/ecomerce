@@ -8,10 +8,13 @@ const userSchema = new mongoose.Schema({
     refreshToken: { type: String },
     role: { type: String, enum: [ 'user', 'creator' ], default: 'user' },
     
-    // ✅ Google OAuth fields - ADD THESE
+    // ✅ Google OAuth fields
     googleId: { type: String, unique: true, sparse: true },
     profilePicture: { type: String },
     isGoogleUser: { type: Boolean, default: false },
+    
+    // ✅ Session tracking for auto-logout
+    lastActivity: { type: Date, default: Date.now },
     
     // Creator specific fields
     bio: { type: String },
