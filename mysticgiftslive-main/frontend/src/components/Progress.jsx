@@ -11,7 +11,8 @@ const Progress = ({ activeStep = 'cart' }) => {
   const allGreen = activeStep === 'order';
 
   return (
-    <div className="w-full flex items-center justify-center py-8">
+   <div className="w-full flex items-center justify-center py-8" style={{ marginTop: '80px' }}>
+
       <div className="flex items-center w-full max-w-xl">
         {steps.map((step, idx) => {
           const isActive = idx === activeIdx;
